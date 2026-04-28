@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Amira</title>
+    <style>
+        :root { --pink-light: #ffc1d6; --pink-dark: #ff85a2; --bg-color: #0b0b0b; }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; color: white; touch-action: manipulation; }
+        
+        /* 1. خلفية النجوم المتلألئة */
+        #starsContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .star { position: absolute; background: white; border-radius: 50%; opacity: 0.4; animation: starTwinkle 3s infinite alternate; }
+        @keyframes starTwinkle { from { opacity: 0.2; } to { opacity: 0.7; } }
+
+        /* مؤشر الموسيقى */
+        .music-waves { position: fixed; top: 20px; right: 20px; display: flex; align-items: flex-end; gap: 3px; height: 20px; z-index: 100; opacity: 0.7; }
+        .wave { width: 3px; background: var(--pink-dark); animation: waveAnim 0.5s infinite alternate; }
+        .wave:nth-child(2) { animation-delay: 0.2s; }
+        .wave:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes waveAnim { from { height: 5px; } to { height: 20px; } }
+
+        /* تأثير اللمس */
+        .sparkle { position: absolute; pointer-events: none; background: var(--pink-light); border-radius: 50%; animation: sparkleFade 0.8s forwards; z-index: 999; }
+        @keyframes sparkleFade { to { opacity: 0; transform: scale(2) translateY(-20px); } }
+
+        .container { text-align: center; background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(12px); padding: 30px; border-radius: 30px; box-shadow: 0 15px 40px rgba(255, 133, 162, 0.3); width: 85%; max-width: 400px; position: relative; z-index: 10; border: 1px solid rgba(255, 133, 162, 0.4); overflow-y: auto; max-height: 85vh; }
+        
+        /* تعديل طول صفحة التهنئة */
+        #page5 .container { max-height: 95vh; padding-bottom: 140px; } 
+
+        .page { display: none; animation: fadeIn 0.7s ease-out; }
+        .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        
+        h2 { color: var(--pink-light); margin-bottom: 20px; font-size: 22px; text-shadow: 2px 2px 10px rgba(255,133,162,0.6); }
+        input[type="password"], textarea { padding: 15px; border: 2px solid var(--pink-dark); border-radius: 15px; text-align: center; font-size: 18px; width: 85%; outline: none; background: rgba(0,0,0,0.6); color: white; margin-bottom: 20px; font-family: inherit; }
+        textarea { text-align: right; height: 100px; resize: none; }
+        
+        button { background-color: var(--pink-dark); color: white; border: none; padding: 12px 25px; margin: 10px; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; animation: fastShake 1.2s infinite ease-in-out; box-shadow: 0 5px 15px rgba(255, 133, 162, 0.5); }
+        @keyframes fastShake { 0%, 100% { transform: translateY(0); } 25% { transform: translateY(-4px) rotate(2deg); } 75% { transform: translateY(4px) rotate(-2deg); } }
+
+        #noBtn { animation: moveFaster 1.5s infinite alternate ease-in-out !important; }
+        @keyframes moveFaster { 0% { transform: translate(0, 0); } 50% { transform: translate(25px, -15px); } 100% { transform: translate(-25px, 15px); } }
+
+        #counter { font-size: 20px; color: var(--pink-light); font-weight: bold; margin: 15px 0; line-height: 1.6; }
+        
+        .poem-img { width: 140px; height: 140px; border-radius: 20px; border: 3px solid var(--pink-dark); margin: 0 auto 15px; object-fit: cover; box-shadow: 0 0 20px var(--pink-dark); display: block; animation: heartbeat 2s infinite ease-in-out; }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        .floating { position: fixed; bottom: -100px; animation: floatUp 6s linear forwards; pointer-events: none; z-index: 1; filter: blur(2px); opacity: 0.6; }
+        @keyframes floatUp { to { transform: translateY(-120vh) rotate(360deg); } }
+        
+        .confetti-heart { position: fixed; font-size: 25px; animation: confettiFall 3s ease-out forwards; z-index: 1000; pointer-events: none; }
+        @keyframes confettiFall { 0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) scale(0.5) rotate(360deg); opacity: 0; } }
+
+        .poem-box, .typewriter-text { font-size: 16px; line-height: 1.7; color: #fff; text-align: right; white-space: pre-wrap; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 20px; border-right: 3px solid var(--pink-dark); }
+        #poemFinalBtn { display: none; margin-top: 15px; }
+        #messageSection { display: none; animation: fadeIn 1s forwards; margin-top: 20px; }
+        
+        /* تعديل مكان رسالة السرحان لتكون بالأعلى */
+        #idleMsg { position: fixed; top: 60px; left: 50%; transform: translateX(-50%); background: var(--pink-dark); color: white; padding: 8px 18px; border-radius: 20px; font-size: 14px; display: none; z-index: 1000; box-shadow: 0 0 15px rgba(255, 133, 162, 0.6); }
+
+        /* ستايل مستطيل كلمات Spotify */
+        .lyrics-container {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 88%; max-width: 380px; background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px; padding: 10px; height: 100px;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 2000; border: 1px solid rgba(255, 133, 162, 0.3); pointer-events: none;
+        }
+        .lyric-line { transition: all 0.6s ease; text-align: center; width: 100%; position: absolute; opacity: 0; }
+        .lyric-line.past { opacity: 0.3; transform: translateY(-30px) scale(0.9); }
+        .lyric-line.current { opacity: 1; transform: translateY(0) scale(1.1); color: #fff; font-weight: bold; font-size: 16px; text-shadow: 0 0 8px var(--pink-dark); }
+        .lyric-line.future { opacity: 0.3; transform: translateY(30px) scale(0.9); }
+    </style>
+</head>
+<body onload="initAll()" onmousemove="createSparkle(event)" ontouchmove="createSparkle(event)" onclick="playClickSound()">
+
+    <div id="starsContainer"></div>
+    <div id="idleMsg">سرحتي في إيه ي أميرة؟ كملي 🥹💗</div>
+
+    <div class="music-waves" id="musicWaves" style="display: none;">
+        <div class="wave"></div><div class="wave"></div><div class="wave"></div>
+    </div>
+
+    <audio id="bgMusic" loop><source src="song.mp3" type="audio/mpeg"></audio>
+    <audio id="clickSound"><source src="https://www.soundjay.com/buttons/sounds/button-37a.mp3" type="audio/mpeg"></audio>
+
+    <div id="spotifyLyrics" class="lyrics-container">
+        <div id="linePast" class="lyric-line"></div>
+        <div id="lineCurrent" class="lyric-line"></div>
+        <div id="lineFuture" class="lyric-line"></div>
+    </div>
+
+    <div id="page0" class="page active">
+        <div class="container">
+            <h2>حطي كلمة السر ي قلبي 🥹🥰</h2>
+            <input type="password" id="passInput" placeholder="••••••">
+            <br>
+            <button onclick="checkPass()">حطيت 🙂</button>
+        </div>
+    </div>
+
+    <div id="page_time1" class="page">
+        <div class="container">
+            <h2>عارفه بقالنا قد أي مع بعض 🙃</h2>
+            <button onclick="alert('بطلي نصب ي أميرة 😂🙂'); window.location.reload();">عارفه🙂</button>
+            <button onclick="nextPage('page_time2')">لأ🙂</button>
+        </div>
+    </div>
+
+    <div id="page_time2" class="page">
+        <div class="container">
+            <h2>حياتي منورة بيكي بقالها 🫣</h2>
+            <div id="counter">جاري الحساب...</div>
+            <button onclick="nextPage(1)">على كده دي احلى ايام قضيتها في حياتي ي محمد اكيد 🙃</button>
+        </div>
+    </div>
+
+    <div id="page1" class="page">
+        <div class="container">
+            <h2>هسالك سؤال صغنون 🙃</h2>
+            <button onclick="nextPage(2)">اسال ي حبيبي 🥹</button>
+            <button onclick="nextPage(2)">اسال ي قلبي 🥹</button>
+        </div>
+    </div>
+
+    <div id="page2" class="page">
+        <div class="container">
+            <h2>بتحبيني ي أميرة 🫣</h2>
+            <button onclick="nextPage(3)">🤭</button>
+        </div>
+    </div>
+
+    <div id="page3" class="page">
+        <div class="container">
+            <h2>شكلك مش بتحبيني 😔</h2>
+            <button onclick="nextPage(4)">متقولش كده بس 🙈</button>
+        </div>
+    </div>
+
+    <div id="page4" class="page">
+        <div class="container" style="min-height: 250px;">
+            <h2>يعني بتحبيني ولا لأ 🥺</h2>
+            <button onclick="triggerConfetti(); nextPage(5)">بحبك ي ميدو 😭🩷</button>
+            <button id="noBtn" onclick="betrayal()">لأ</button>
+        </div>
+    </div>
+
+    <div id="page5" class="page">
+        <div class="container">
+            <img src="amira.jpg" class="poem-img" onerror="this.style.display='none'">
+            <h2 style="font-size: 24px;">🎉💞🥹 <br>𝑯𝒂𝒑𝒑𝒚 𝒃𝒊𝒓𝒕𝒉𝒅𝒂𝒚 𝑨𝒎𝒊𝒓𝒂</h2>
+            <div id="poemText" class="poem-box"></div>
+            <button id="poemFinalBtn" onclick="nextPage(6)">وانت طيب ي روح قلبي وان شاء الله نفضل سوا طول عمرنا 🤭💗</button>
+        </div>
+    </div>
+
+    <div id="page6" class="page">
+        <div class="container">
+            <div id="finalText" class="typewriter-text"></div>
+            <div id="messageSection">
+                <h3 style="color: var(--pink-light); font-size: 18px;">اكتبي رسالتك ليا هنا ي قلبي 🥹👇🏻 </h3>
+                <form id="loveForm">
+                    <textarea name="message" id="amiraMsg" placeholder="اكتبي كل اللي في قلبك القمر ده..." required></textarea>
+                    <br>
+                    <button type="submit" id="sendBtn">إرسال لـ محمد 💌</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="page7" class="page">
+        <div class="container">
+            <h2>رسالتك وصلت لقلب محمد واتعلقت فيه 🥹💗</h2>
+            <button onclick="nextPage(8)">انت كده كده احلى قلب شوفته في حياتي 🤭</button>
+        </div>
+    </div>
+
+    <div id="page8" class="page">
+        <div class="container">
+            <h2>تعالي يلا نلف تاني في عيد ميلادك 🙈✨</h2>
+            <button onclick="window.location.reload()">اوك يلا بينا 🙃</button>
+        </div>
+    </div>
+
+    <script>
+        let idleTimer;
+        const songLyrics = [
+            { time: 0, text: "♪ мσнαмєɒ ταℓαℓ 🤭♥" },
+            { time: 6, text: "لما كنت اخاف" },
+            { time: 8, text: "من الاصوات اللي براسي تحكيني وساعات" },
+            { time: 13, text: "اخاف من احلامي ترميني بلوحات" },
+            { time: 16, text: "راسمها راسي بلاكي بلا ألوان" },
+            { time: 23, text: "علمتيني اني انضج بإحساسي" },
+            { time: 26, text: "لبى عيون اللي وجودها اساسي" },
+            { time: 30, text: "عشرة عمري حب حياتي" },
+            { time: 33, text: "هي حروفي وكل ابياتي" },
+            { time: 35, text: "ضحكتها بشعر اسود" },
+            { time: 37, text: "اللي يلالي يلالي يلالي يلالي" },
+            { time: 40, text: "مولاتي انتِ من بين البنات 🥹🫶🏻" },
+            { time: 44, text: "دونك لا بقدر ولا بستطيع 😭🤎" },
+            { time: 48, text: "كأنك ياقوتة في قلب الجبل 💎✨" },
+            { time: 52, text: "مِلكٌ لقلبي ليست للجميع 🫀👀" },
+            { time: 56, text: "في عينيكي السما وقربك دهب" },
+            { time: 60, text: "انتي الهوا من غيرك مخنوق" },
+            { time: 64, text: "ومرت سنين ولسه مفيش" },
+            { time: 68, text: "أي جديد وانا لسه" },
+            { time: 71, text: "ماطلعتش من البحر من موجك للصخر" },
+            { time: 79, text: "علمتيني الصبر والدنيا من غيرك مش دنيا دي القهر" },
+            { time: 86, text: "مش قادر ما أشرحش" },
+            { time: 88, text: "مولاتي انتِ من بين البنات 🥹🫶🏻" },
+            { time: 92, text: "دونك لا بقدر ولا بستطيع 😭🤎" },
+            { time: 96, text: "كأنك ياقوتة في قلب الجبل 💎✨" },
+            { time: 100, text: "مِلكٌ لقلبي ليست للجميع 🫀👀" },
+            { time: 104, text: "الارض تبطل لف لما اتوه عنك" },
+            { time: 107, text: "عندي وحدة مابتغرقش غير في قلب بحرك" },
+            { time: 111, text: "والنجوم دي مابتبانش ولا تنور بعدك" },
+            { time: 115, text: "تعرف تبقى كل الفرق جوا قلبي طول الوقت" },
+            { time: 119, text: "الارض تبطل لف لما اتوه عنك" },
+            { time: 123, text: "عندي وحدة مابتغرقش غير في قلب بحرك" },
+            { time: 127, text: "والنجوم دي ما بتبانش، والنجوم دي ما بتبانش" },
+            { time: 131, text: "والنجوم دي ما بتبانش، ولا تنور بعدك" },
+            { time: 136, text: "مولاتي انتِ من بين البنات 🥹🫶🏻" },
+            { time: 140, text: "دونك لا بقدر ولا بستطيع 😭🤎" },
+            { time: 145, text: "كأنك ياقوتة في قلب الجبل 💎✨" },
+            { time: 148, text: "مِلكٌ لقلبي ليست للجميع 🫀👀" },
+            { time: 153, text: "♪ мσнαмєɒ ταℓαℓ 🤭♥" }
+        ];
+
+        function initAll() {
+            createStars();
+            startGlobalParty();
+            resetIdleTimer();
+        }
+
+        function playClickSound() {
+            const click = document.getElementById('clickSound');
+            click.currentTime = 0;
+            click.play().catch(e => {});
+        }
+
+        function createStars() {
+            const container = document.getElementById('starsContainer');
+            for(let i=0; i<70; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 2 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        function resetIdleTimer() {
+            document.getElementById('idleMsg').style.display = 'none';
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(() => {
+                if(!document.getElementById('page0').classList.contains('active')) {
+                    document.getElementById('idleMsg').style.display = 'block';
+                }
+            }, 59000);
+        }
+
+        function createSparkle(e) {
+            resetIdleTimer();
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            const x = e.pageX || (e.touches ? e.touches[0].pageX : 0);
+            const y = e.pageY || (e.touches ? e.touches[0].pageY : 0);
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            const size = Math.random() * 10 + 5 + 'px';
+            sparkle.style.width = size; sparkle.style.height = size;
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 800);
+        }
+
+        function triggerConfetti() {
+            for(let i=0; i<60; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'confetti-heart';
+                    heart.innerHTML = ['💖','💗','🌸','🎈'][Math.floor(Math.random()*4)];
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.top = '-50px';
+                    document.body.appendChild(heart);
+                    setTimeout(() => heart.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        function updateLyrics() {
+            const audio = document.getElementById('bgMusic');
+            const currentTime = audio.currentTime;
+            for (let i = 0; i < songLyrics.length; i++) {
+                if (currentTime >= songLyrics[i].time && (i === songLyrics.length - 1 || currentTime < songLyrics[i + 1].time)) {
+                    const past = document.getElementById('linePast');
+                    const current = document.getElementById('lineCurrent');
+                    const future = document.getElementById('lineFuture');
+                    const currentText = songLyrics[i].text;
+                    if (current.innerText !== currentText) {
+                        past.innerText = songLyrics[i - 1] ? songLyrics[i - 1].text : "";
+                        current.innerText = currentText;
+                        future.innerText = songLyrics[i + 1] ? songLyrics[i + 1].text : "";
+                        past.className = 'lyric-line past';
+                        current.className = 'lyric-line current';
+                        future.className = 'lyric-line future';
+                    }
+                    break;
+                }
+            }
+        }
+
+        function nextPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            let target = (typeof id === 'number') ? 'page' + id : id;
+            document.getElementById(target).classList.add('active');
+            if(id === 'page_time2') startCounter();
+            if(id === 5) startPoem();
+            if(id === 6) startFinalText();
+            
+            const audio = document.getElementById('bgMusic');
+            audio.play().then(() => {
+                document.getElementById('musicWaves').style.display = 'flex';
+                document.getElementById('spotifyLyrics').style.display = 'flex';
+                audio.ontimeupdate = updateLyrics;
+            }).catch(() => {});
+        }
+
+        function checkPass() {
+            if(document.getElementById('passInput').value === "962009") nextPage('page_time1');
+            else alert("كلمة السر غلط ي أميرة ركزي 🙂💔");
+        }
+
+        function startCounter() {
+            const startDate = new Date("2024-11-23T00:00:00");
+            setInterval(() => {
+                const now = new Date();
+                const diff = now - startDate;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / 1000 / 60) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+                document.getElementById('counter').innerHTML = `قضينا سوا<br>${days} يوم و ${hours} ساعة<br>${minutes} دقيقة و ${seconds} ثانية 🥹`;
+            }, 1000);
+        }
+
+        document.getElementById('loveForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('sendBtn');
+            btn.innerHTML = "جاري الإرسال...";
+            fetch("https://formspree.io/f/xeerykop", {
+                method: "POST",
+                body: new FormData(this),
+                headers: { 'Accept': 'application/json' }
+            }).then(r => r.ok ? nextPage(7) : alert("خطأ!"));
+        });
+
+        function betrayal() { alert("انتي مش كيوت وغدرتي بيا 😭"); window.location.reload(); }
+
+        function startGlobalParty() {
+            setInterval(() => {
+                const el = document.createElement('div');
+                el.className = 'floating';
+                el.innerHTML = Math.random() > 0.5 ? '🎈' : '❤️';
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 6000);
+            }, 500);
+        }
+
+        function startPoem() {
+            const text = "ڪـل ســنــة وإنـتـي طـيـبـة ي أحــلـى مـــن يــتـم 17 ســنــة ودا اولــــ عــيـد مــيـلاد لــيـكـي واحــنـا مــع بــعـض وتــانـي عــيـد مــيـلاد لــيـكـي مـــن مــعـرفـتـنا لبــعـض. 🥹🙈💜\n\nبــتـمـنـالـك مـــن ڪـل قــلـبـي إنــ الــسـنـة دي تــكـون ســنــة جـديـدة وســعـيـدة عـلـيـكـي وتــكـونـي مــوفـقـة فــيـه‍ا دايــمـا يا رب.. انــا عـارف إنــ الـســنــة دي هـتـكـون غــيـر أي ســنــة فـاتـت لإنـنـا هـنـكـون فـي ثـانـويـة وانــا عـارفــ ومُـتـيـقـن انــڪ قــدهـا وقـدود وربـنـا و انــك إن شـاء الله هـتـفـرحـيـنـي انــا قـبـل نــفـسـك وهــتـحـقـقـي حــلـمـنـا إن شـاء الله 🥹💞\n\nو آخــر كــلامـي أن احـنـا نـكــون قـدهـا ونــفـرح بــعـض ونــتـقـوق ونــحـقـق ڪـل مـا نـنتـمـنـاه اللهم آمـيـن يـا رب 🤲🏻🤍";
+            typeWrite('poemText', text, 45, () => {
+                document.getElementById('poemFinalBtn').style.display = 'inline-block';
+            });
+        }
+
+        function startFinalText() {
+            const text = "كل حب منحته لكي هو ملڪُـكي للابد لن أطلبه يوماً ولن أندم عليه ولن اعتبره هباءاً فالحب لم يكن يوماً صفقة بل كان هدية قدمتها لكي أتمنى أنه في ساعات صمتٍ حين يثقل العالم على روحُكي تتذكري أن هناك من نظر إليكي يوماً ورأي شيئاً يستحق التمسك به وإن شعرتي يوماً بدفئٍ لا تعرفي مصدره خفيف عابر كذكرى فلعل ذلك أنا في مكان ما من الزمان ما زلت أفي بوعدي لكي.. بحبك يا أميرة 🥹♥✨ ";
+            typeWrite('finalText', text, 65, () => document.getElementById('messageSection').style.display = 'block');
+        }
+
+        function typeWrite(id, text, speed, callback) {
+            let i = 0; const el = document.getElementById(id); el.innerHTML = "";
+            function step() {
+                if (i < text.length) { el.innerHTML += text.charAt(i); i++; setTimeout(step, speed); }
+                else if (callback) callback();
+            }
+            step();
+        }
+    </script>
+</body>
+</html>
